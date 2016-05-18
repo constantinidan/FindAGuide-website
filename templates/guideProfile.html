@@ -1,0 +1,183 @@
+<!--
+user.hml : child of base.html
+This file contains the guide profile template with :
+- guide informations
+- guide activities
+-->
+
+
+<!-- extend the base -->
+{% extends "base.html" %}
+
+<!-- load static files -->
+{% load staticfiles %}
+
+<!-- load templatetags -->
+{% load addcss %}
+{% load set_var %}
+{% load userActivityThumbnails %}
+
+
+
+{% block bodyContent %}
+
+
+<div class="row">
+<div class="container text-center">
+
+<div class="col-lg-13">
+
+{% if guide != None %}
+
+    <!-- Padding to see the nav bar buttons even if image is white like text -->
+    <p style="padding:16px"> </p>
+
+    <div class="card hovercard">
+        <div class="card-background">
+            <!-- <img class="card-bkimg" alt="" src="{{ guideAvatar.url }}"> -->
+        </div>
+        <div class="useravatar">
+            <img alt="" src="{{ guideAvatar.url }}">
+        </div>
+        <div class="card-info"> <span class="card-title">{{guide.user.username}}</span>
+
+        </div>
+    </div>
+    <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" id="Me" class="{{btn1Class}}" href="#tab1" data-toggle="tab"><!-- <span class="glyphicon glyphicon-star" aria-hidden="true"></span> -->
+                <div class="hidden-xs">Information</div>
+            </button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" id="favorites" class="{{btn2Class}}" href="#tab2" data-toggle="tab"><!-- <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> -->
+                <div class="hidden-xs">Contact</div>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="well">
+      <div class="tab-content">
+        <!-- info tab -->
+        <div class="{{tab1Class}}" align="left" id="tab1">
+          <h4 class="inline">Personal information </h4>
+          <br>
+          <br>
+          <p class="blacktext">Username : {{guide.user.username}}<br>
+          First Name : {{guide.user.first_name}}<br>
+          Last Name : {{guide.user.last_name}}<br>
+          </p>
+          <br>
+          <p class="blacktext">
+            <h4 class="inline">Activities </h4>
+          </p>
+          <!-- Show as much thumbnails as required -->
+          <!-- Note : this page is loaded only if user as one or more activities -->
+            {{  activities|userActivityThumbnails }}
+
+        </div>
+
+        <!-- Contact tab -->
+        <div class="{{tab2Class}}" align="left" id="tab2">
+          <div class="row">
+          <div class="col-md-8">
+            <h4 class="inline">Contact {{guide.user.username}} : </h4>
+            <p style="padding:2px"> </p>
+
+            {% if user.is_authenticated %}
+              <form class="form-signin" method="POST" action=""> {% csrf_token %}
+
+                  <a class="blacktext">{{ contactForm.subject.errors }}</a>
+                  {{ contactForm.subject|addcss:"class:form-control,placeholder:Subject" }}
+
+                  <p style="padding:2px"> </p>
+
+                  <a class="blacktext">{{ contactForm.message.errors }}</a>
+                  {{ contactForm.message|addcss:"class:form-control description-form,placeholder:Your message" }}
+
+                  <p style="padding:2px"> </p>
+
+                  <input class="btn btn-default" type="submit"  name="Contact guide" value="Send"></input>
+                
+              </form>
+
+            {% else %}
+              <p> Sorry, you must be authenticated to contact a guide, please log in or sign up </p>
+            {% endif %}
+
+          </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+</div>
+
+
+{% else %} <!-- if guide == None -->
+
+<header class="">
+        <div class="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <p style="padding:120px"> </p>                   
+                        <p class="brand-heading">Oups, no guide corresponding to this request. </p>
+                        <p style="padding:90px"> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+</header>
+
+{% endif %}
+
+
+</div>
+</div>
+</div>
+
+
+{% endblock %} <!-- body content -->
+
+
+
+
+{% block modalContent %}
+
+
+
+<!-- Message sent Modal --> 
+<div class="modal fade" id="messageSentModal" tabindex="-1" role="dialog" aria-labelledby="messageSentModalLabel">
+  <div class="modal-dialog modal-md" role="document">
+
+  <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row row-centered" >
+          <div class="col-md-8 col-centered" >
+
+            <h4 class="blacktext"> Message sent to {{guide.user.username}} ! </h4><br>
+
+          </div>
+
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#messageSentModal">Continue</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}

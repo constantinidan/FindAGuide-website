@@ -1,0 +1,37 @@
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lora'), local('Lora-Regular'), url(http://fonts.gstatic.com/s/lora/v9/rAXKWvABQNHjPUk26ixVvvesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lora Bold'), local('Lora-Bold'), url(http://fonts.gstatic.com/s/lora/v9/mlTYdpdDwCepOR2s5kS2CwLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lora Italic'), local('Lora-Italic'), url(http://fonts.gstatic.com/s/lora/v9/_MYF_5lLoOGnzKiQsUc_vevvDin1pK8aKteLpeZ5c0A.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Lora Bold Italic'), local('Lora-BoldItalic'), url(http://fonts.gstatic.com/s/lora/v9/_IxjUs2lbQSu0MyFEAfa7ZBw1xU1rKptJj_0jans920.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Montserrat-Regular'), url(http://fonts.gstatic.com/s/montserrat/v6/zhcz-_WihjSQC0oHJ9TCYAzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Montserrat-Bold'), url(http://fonts.gstatic.com/s/montserrat/v6/IQHow_FEYlDC4Gzy_m8fcmaVI6zN22yiurzcBKxPjFE.woff2) format('woff2');
+}

@@ -1,0 +1,368 @@
+<!--
+base.html : 
+This file contains the html base for all website pages.
+It includes :
+- the navigation bar
+- The modals
+- The loading of the css
+- The loading of the javascript
+- Django template variables setting for all html children pages
+-->
+
+<!DOCTYPE html>
+<!-- load static files -->
+{% load staticfiles %}
+
+<!-- load templatetags -->
+{% load addcss %}
+{% load set_var %}
+
+
+<!-- Set conditionnal django variables that will be used in the html 
+     note : all of them must be set here, variable setting doesn't work in children's html
+-->
+
+<!-- COMMON VARIABLES -->
+<!-- Onload sets what to do when page load -->
+<!-- onClickLi what to to when closing login modal -->
+
+  <!-- defaults -->
+  {% set loginModalClass = "modal fade" %}
+  {% set signUpModalClass = "modal fade" %}
+  {% set onload = "" %}
+  {% set onClickLi = "" %}
+
+  <!-- conditional -->
+  {% if liForm.error == True or liForm.userAuthError == True  %}
+    {% set onload = "show_modal('logInModal');" %}
+    {% set loginModalClass = "modal" %}
+    {% set onClickLi = "reload_page();" %}
+  {% elif suForm.error == True %}
+    {% set onload = "show_modal('signUpModal');" %}
+    {% set signUpModalClass = "modal" %}
+  {% endif %}
+
+<!-- USERPROFILE PAGE SPECIFIC VARIABLES -->
+<!-- Onload sets what to do when page loads -->
+<!-- onClickna what to to when closing new activity modal -->
+
+  <!-- defaults -->
+  {% set newActModalClass = "modal fade" %}
+  {% set onClickna = "" %}
+
+  <!-- conditional -->
+  {% if new_user == "True" %}
+    {% set onload = "show_modal('welcomeNewUserModal');" %}
+  {% endif %}
+
+  {% if newActForm.error == True %}
+    {% set onload = "show_modal('newActivityModal');" %}
+    {% set newActModalClass = "modal" %}
+    {% set onClickna = "redirect_page('/userProfile');" %}
+  {% endif %}
+
+<!-- GUIDEPROFILE PAGE SPECIFIC VARIABLES -->
+<!-- tabClass sets class of tab : objective is to set which tab is active on page load -->
+<!-- btnClass sets class of btn of tab : same objective -->
+
+  <!-- condional variables for tabs -->
+  {% if contactForm.error == False %}
+    {% set tab1Class = "tab-pane fade in blacktext active" %}
+    {% set tab2Class = "tab-pane fade in blacktext" %}
+    {% set btn1Class = "btn btn-primary" %}
+    {% set btn2Class = "btn btn-default" %}
+  {% else %}
+    {% set tab1Class = "tab-pane fade in blacktext" %}
+    {% set tab2Class = "tab-pane fade in blacktext active" %}
+    {% set btn1Class = "btn btn-default" %}
+    {% set btn2Class = "btn btn-primary" %}
+  {% endif %}
+
+  {% if messageSent == True %}
+    {% set onload = "show_modal('messageSentModal');" %}
+  {% endif %}
+
+
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>FindAGuide</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Bootstrap add ons CSS -->
+    <link href="{% static 'css/bootstrap-social.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-switch.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/bootstrap-lightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/findaguide.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fonts/css/googleapis.css' %}" rel="stylesheet" type="text/css">
+    
+
+</head>
+
+
+ <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="{{onload}}">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+            <div class="container">
+
+            	<!-- Home Button -->
+                <div class="collapse navbar-collapse navbar-left navbar-main-collapse">
+                    <ul class="nav navbar-nav">
+                        <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                        <li class="hidden">
+                            <a href="#page-top"></a>
+                        </li>
+                        <li>
+                            <a class="page-top" onclick="redirect_page('/');" style="cursor:default;">FindAGuide</a>
+                        </li>
+                    </ul>
+                </div>
+
+                
+                <!-- Connexion Button -->
+                <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                    <ul class="nav navbar-nav">
+                        <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                        <li class="hidden">
+                            <a href="#page-top"></a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li>
+
+                              <a class="page-top" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:default;">
+                                {{user.username}}
+                                <span class="caret"></span>
+                              </a>
+
+                              <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                <li>
+                                  <a class="blacktext" onclick="redirect_page('/userProfile');">My profile
+                                  </a>
+                                </li>
+                                <li>
+                                    <form id="log-out" method="POST" action=""> {% csrf_token %} 
+                                    <!-- <input class="blacktext btn" href="" onclick="document.getElementById('log-out').submit();">Log out</input> -->
+                                    <input class="blacktext btn" type="submit" name="Log out" value="Log out">Log out</input>
+                                    </form>
+                                </li>
+                              </ul>
+
+                        </li>
+                        {% else %}
+                        <li>
+                            <a class="page-top" data-toggle="modal" data-target="#logInModal" style="cursor:default;">Login</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container -->
+        </nav>
+
+        <!-- Children body content -->
+        {% block bodyContent %}
+		    {% endblock %}
+
+
+        <!-- Footer -->
+        <footer>
+            <div class="container text-center">
+                <h4>Copyright &copy; FindAGuide 2016</h4>
+            </div>
+        </footer>
+
+
+        <!-- jQuery -->
+        <script src="{% static 'js/jquery.js' %}"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-switch.js' %}"></script>
+
+        <!-- Plugin JavaScript -->
+        <script src="{% static 'js/jquery.easing.min.js' %}"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="{% static 'js/findaguide.js' %}"></script>
+
+        <!-- Autocompletion script -->
+        <script src="{% static 'js/typeahead.min.js' %}"></script>
+
+        <!-- Thumbnails expansion -->
+        <script src="{% static 'js/bootstrap-lightbox.min.js' %}"></script>
+
+</body>
+
+
+
+<!-- MODALS -->
+{% ifequal user.is_authenticated True %}
+
+
+<!-- Children modal content -->
+{% block modalContent %}
+{% endblock %}
+
+
+
+{% else %} <!-- IF NO USER -->
+
+
+<!-- Login Modal -->
+<div class="{{loginModalClass}}" id="logInModal" tabindex="-1" role="dialog" aria-labelledby="logInModalLabel">
+  <div class="modal-dialog" role="document">
+
+  <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="{{onClickLi}}"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      <div class="modal-body">
+        
+
+        <div class="row row-centered" >
+          <div class="col-md-8 col-centered" >
+
+            <form class="form-signin" method="POST" action=""> {% csrf_token %}
+
+            {% if liForm.userAuthError == False and suForm.error == False %}
+              <h4 class="blacktext">Please log in</h4>
+            {% else %}
+              <h4 class="blacktext">Authentification error, please retry or sign up</h4>
+            {% endif %}
+
+              <a class="blacktext">{{ liForm.username.errors }}</a>
+              {{ liForm.username|addcss:"class:form-control,placeholder:Username" }}
+              <a class="blacktext">{{ liForm.password.errors }}</a>
+              {{ liForm.password|addcss:"type:password,id:inputPassword,class:form-control,placeholder:Password" }}
+ 
+              <input class="btn btn-lg btn-primary btn-block" type="submit" name="Log in" value='Log in'></input>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#signUpModal">No account?  Sign up here</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- SignUp Modal -->
+<div class="{{signUpModalClass}}" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel">
+  <div class="modal-dialog modal-md" role="document">
+
+  <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reload_page('/');"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row row-centered" >
+          <div class="col-md-8 col-centered" >
+
+            <form class="form-signin" method="POST" action='{{ action_url }}' enctype="multipart/form-data"> {% csrf_token %}
+
+              <h4 class="blacktext">Please fill the fields to sign up</h4>  
+
+              <a class="blacktext">{{ suForm.email.errors }}</a>
+              {{ suForm.email|addcss:"class:form-control,placeholder:Email" }}
+              <a class="blacktext">{{ suForm.first_name.errors }}</a>
+              {{ suForm.first_name|addcss:"class:form-control,placeholder:First name" }}
+              <a class="blacktext">{{ suForm.last_name.errors }}</a>
+              {{ suForm.last_name|addcss:"class:form-control,placeholder:Last name" }}
+              <a class="blacktext">{{ suForm.username.errors }}</a>
+              {{ suForm.username|addcss:"class:form-control,placeholder:Username" }}
+              <a class="blacktext">{{ suForm.password.errors }}</a>
+              {{ suForm.password|addcss:"type:password,id:inputPassword,class:form-control,placeholder:Password" }}
+              <a class="blacktext">{{ suForm.avatar.errors }}</a>
+              {{ suForm.avatar }}
+
+              <input class="btn btn-default" type="submit"  name="Sign up" value="Submit"></input>
+            
+            </form>
+          </div>
+
+          <!-- <div class="col-md-6 col-centered">
+
+            <a class="btn btn-block btn-social btn-facebook">
+                <span class="fa fa-facebook"></span> Sign in with Facebook
+            </a>
+            <a class="btn btn-block btn-social btn-google">
+                <span class="fa fa-google-plus"></span> Sign in with Google +
+            </a>
+          </div> -->
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#signUpModal" onclick="reload_page('/');">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- newUser Modal -->
+<div class="modal fade" id="newUserModal" tabindex="-1" role="dialog" aria-labelledby="newUserModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+
+  <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row row-centered" >
+          <div class="col-md-6 col-centered" >
+
+            
+              <h4 class="blacktext">Welcome to FindAguide !</h4>
+             
+              <!-- <input class="btn btn-default" type="submit"  name="Sign up" value="Sign up">Submit</input> -->
+            
+            </form>
+          </div>
+        
+      </div>
+      <div class="modal-footer">
+      <br>
+        <!-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUserModal">Cancel</button>
+        -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endifequal %} <!-- end user_is_authenticated true -->
+
+</html>

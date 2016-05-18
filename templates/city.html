@@ -1,0 +1,107 @@
+<!--
+city.hml : child of base.html
+This file contains the city template with :
+- find a guide/activity search bar
+-->
+
+<!-- extend the base -->
+{% extends "base.html" %}
+
+<!-- load static files -->
+{% load staticfiles %}
+
+<!-- load templatetags -->
+{% load addcss %}
+{% load guideThumbnails %}
+{% load activityThumbnails %}
+{% load gen_bodyHeaderStyle %}
+
+
+
+{% block bodyContent %}
+<!-- Intro Header -->
+<header class="intro" style="{{background_image|gen_bodyHeaderStyle}}">
+    <div class="intro-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+
+
+                  {% if cityError == True %}
+                  <h4>Oups, this city is not available, sorry</h4>
+
+                  {% else %}
+
+                    <p style="padding:30px"> </p>
+                    {% if user.is_authenticated %}               
+                    <h1 class="city-heading">{{ user.username }}, welcome to {{city_name}}</h1>
+                    {% else %}
+                    <h1 class="city-heading">Welcome to {{city_name}}</h1>
+                    {% endif %}
+                    <p style="padding:30px"> </p>
+                    
+
+                        <form method="POST" action=""> {% csrf_token %}
+
+                        <div class="row">
+
+                              <!-- SEARCH BAR -->
+                                <div class="col-md-6  col-md-offset-3">
+                                    {{ srchForm.guide|addcss:"class:blacktext form-control city,placeholder:Search for guides" }}
+                                </div>
+                        </div>
+
+                        <div class="row">
+
+                                <div class="col-md-6 col-md-offset-3">
+
+                                    {{ srchForm.category|addcss:"class:blacktext form-control city" }}
+                                </div>
+
+                        </div>
+
+
+
+                            <button type="submit" class="btn btn-default" name="Search guides or activities" value="" hidden="true">Search
+                            </button>
+
+
+
+                        </form>
+
+
+
+                    {% endif %} <!-- End of CityError check -->
+
+                    <p style="padding:30px"> </p>
+
+                </div>
+            </div>
+
+
+            <!-- Show as much thumbnails as required -->
+            {% if guides == "empty" %}
+                <h4> No guides corresponding to this request </h4>
+            {% elif activities == "empty" %}
+                <h4> No activities corresponding to this request </h4>
+            {% else %}
+                {% if guides != None %}
+                  {{  guides|guideThumbnails }}
+                {% elif activities != None %}
+                  {{  activities|activityThumbnails }}
+                {% endif %}
+            {% endif %}
+
+
+        </div>
+    </div>
+</header>
+
+
+{% endblock %}
+
+
+
+{% block modalContent %}
+
+{% endblock %}

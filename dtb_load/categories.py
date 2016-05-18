@@ -1,0 +1,15 @@
+list_category =["Sport",
+				 "Bar",
+				 "Visit",
+				 "Party",
+				 "Gaming",
+				 "Food",
+				 "Tour",
+				 "Shopping",
+				 "Events",
+				 "Other",
+				 "Photography",
+				 "Relaxation",
+				 "Gambling",
+				 "Art"
+			   ]
